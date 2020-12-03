@@ -1,4 +1,4 @@
-package com.rayray.madcapstoneproject
+package com.rayray.madcapstoneproject.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +10,11 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
+import com.rayray.madcapstoneproject.R
+import com.rayray.madcapstoneproject.ui.ui.AfschrijfFragment
+import com.rayray.madcapstoneproject.ui.ui.ArtikelOverzichtFragment
+import com.rayray.madcapstoneproject.ui.ui.ControleFragment
+import com.rayray.madcapstoneproject.ui.ui.InboekFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,14 +27,14 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar!!.title = ""
 
-
-
         val tabLayout: TabLayout = findViewById(R.id.tabLayout)
         val viewPager: ViewPager = findViewById(R.id.viewPager)
         val viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
 
-        viewPagerAdapter.addFragment(FirstFragment(), "first")
-        viewPagerAdapter.addFragment(SecondFragment(), "second")
+        viewPagerAdapter.addFragment(ArtikelOverzichtFragment(), "Artikelen")
+        viewPagerAdapter.addFragment(InboekFragment(), "Inboeken")
+        viewPagerAdapter.addFragment(AfschrijfFragment(), "Afboeken")
+        viewPagerAdapter.addFragment(ControleFragment(), "Controle")
 
         viewPager.adapter = viewPagerAdapter
         tabLayout.setupWithViewPager(viewPager)
