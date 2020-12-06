@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "529874237703",
+    "project_id": "md-themasemester",
+    "storage_bucket": "md-themasemester.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:529874237703:android:1b542e687d188a13ededa2",
+        "android_client_info": {
+          "package_name": "com.rayray.madcapstoneproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "529874237703-lsuhudql8vc4a5buvdm3q48q1347cnqk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTv14I99rXc6BDnqzqGeI0sZJ6-Pk2Ruo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "529874237703-lsuhudql8vc4a5buvdm3q48q1347cnqk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

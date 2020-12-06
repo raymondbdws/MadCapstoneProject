@@ -10,18 +10,27 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
+import com.google.firebase.FirebaseApp
+import com.google.firebase.firestore.FirebaseFirestore
 import com.rayray.madcapstoneproject.R
 import com.rayray.madcapstoneproject.ui.ui.AfschrijfFragment
 import com.rayray.madcapstoneproject.ui.ui.ArtikelOverzichtFragment
 import com.rayray.madcapstoneproject.ui.ui.ControleFragment
 import com.rayray.madcapstoneproject.ui.ui.InboekFragment
 
+/****
+ * @author Raymond Chang
+ */
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar_main))
+
+        //Firebase
+        FirebaseFirestore.setLoggingEnabled(true)
+        FirebaseApp.initializeApp(this)
 
         val toolbar: Toolbar = findViewById(R.id.toolbar_main)
         setSupportActionBar(toolbar)
@@ -31,6 +40,7 @@ class MainActivity : AppCompatActivity() {
         val viewPager: ViewPager = findViewById(R.id.viewPager)
         val viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
 
+        //Tabladen
         viewPagerAdapter.addFragment(ArtikelOverzichtFragment(), "Artikelen")
         viewPagerAdapter.addFragment(InboekFragment(), "Inboeken")
         viewPagerAdapter.addFragment(AfschrijfFragment(), "Afboeken")

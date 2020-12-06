@@ -4,11 +4,13 @@
     <!-- Strings used for fragments for navigation -->
 
     <!--- fragment overzicht artikelen -->
-    <string name="itSearchHint">Zoeken naar artikelen</string>
-    <string name="spinnerSort">Sorteren op: </string>
+    <string name="it_search_hint">Zoeken naar artikelen</string>
+    <string name="spinner_sort">Sorteren op: </string>
 
     <!--- fragment inboeken -->
-    <string name="tvArtikelGescand">Artikel gescand:</string>
-    <string name="tvArticleCode">{Artikelcode}</string>
-    <string name="tvQuantity">0/0</string>
+    <string name="tv_article_scanned">Artikel gescand:</string>
+    <string name="tv_quantity">0/0</string>
+
+    <!-- Controle fragment -->
+    <string name="scan_article">Scan artikel</string>
 </resources>
