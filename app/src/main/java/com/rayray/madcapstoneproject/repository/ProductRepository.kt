@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.ktx.toObject
 import com.rayray.madcapstoneproject.model.DepartmentEnum
 import com.rayray.madcapstoneproject.model.Product
 import kotlinx.coroutines.tasks.await
@@ -21,9 +22,9 @@ class ProductRepository {
     private var firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
     private var productDocument = firestore.collection("products").document("Telecom").collection("Samsung").document("1652625")
 
-    private val _product: MutableLiveData<Product> = MutableLiveData()
+    private val _product: MutableLiveData<List<Product>> = MutableLiveData()
 
-    val product: LiveData<Product> get() = _product
+    val product: LiveData<List<Product>> get() = _product
 
     private val _createSuccess: MutableLiveData<Boolean> = MutableLiveData()
 
@@ -44,6 +45,8 @@ class ProductRepository {
                 val parsedReleaseDate = LocalDate.parse( "2020 11 07", formatter)
                 val releaseDate: ZonedDateTime = parsedReleaseDate.atStartOfDay(ZoneId.systemDefault())
 
+
+                //val product = data.toObject<List<Product>>()
                 val product = Product(
                     data.get("product_code").toString(),
                     data.get("ean_code").toString(),
@@ -58,7 +61,6 @@ class ProductRepository {
                     data.get("specs").toString(),
                     Date.from(releaseDate.toInstant())
                 )
-
                 _product.value = product
 
 

@@ -7,6 +7,7 @@
     tools:context=".ui.ui.ArtikelOverzichtFragment">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvProducts"
         android:layout_width="410dp"
         android:layout_height="605dp"
         android:layout_marginTop="16dp"

@@ -14,7 +14,7 @@ class ProductViewModel(application: Application) : AndroidViewModel(application)
     private val TAG = "FIRESTORE"
     private val productRepository: ProductRepository = ProductRepository()
 
-    val product: LiveData<Product> = productRepository.product
+    val product: LiveData<List<Product>> = productRepository.product
 
     val createSuccess: LiveData<Boolean> = productRepository.createSuccess
 
