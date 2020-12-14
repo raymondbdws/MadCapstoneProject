@@ -3,65 +3,72 @@ package com.rayray.madcapstoneproject.repository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
-import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.firestore.*
 import com.rayray.madcapstoneproject.model.DepartmentEnum
 import com.rayray.madcapstoneproject.model.Product
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withTimeout
-import java.lang.Exception
-import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
+
 class ProductRepository {
     private var firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private var productDocument = firestore.collection("products").document("Telecom").collection("Samsung").document("1652625")
+    private var productDocument = firestore.collection("products").document("Telecom").collection("Samsung").document(
+        "1652625"
+    )
 
     private val _product: MutableLiveData<List<Product>> = MutableLiveData()
-
     val product: LiveData<List<Product>> get() = _product
-
     private val _createSuccess: MutableLiveData<Boolean> = MutableLiveData()
-
     val createSuccess: LiveData<Boolean> get() = _createSuccess
 
     suspend fun getProduct(){
+        val productList: MutableList<Product> = mutableListOf()
+
         try {
             withTimeout(5_000){
-                val data = productDocument
-                    .get()
-                    .await()
-
                 val formatter = DateTimeFormatter.ofPattern("yyyy MM dd")
 
-                val parsedRegisteredDate = LocalDate.parse( "2020 11 07", formatter)
+                val parsedRegisteredDate = LocalDate.parse("2020 11 07", formatter)
                 val registerDate: ZonedDateTime = parsedRegisteredDate.atStartOfDay(ZoneId.systemDefault())
 
-                val parsedReleaseDate = LocalDate.parse( "2020 11 07", formatter)
+                val parsedReleaseDate = LocalDate.parse("2020 11 07", formatter)
                 val releaseDate: ZonedDateTime = parsedReleaseDate.atStartOfDay(ZoneId.systemDefault())
 
+                //collection
+                firestore.collection("products")
+                    .get()
+                    .addOnSuccessListener { products ->
+                        //Documents
+                        for (product in products){
+                            productList.add(Product(
+                                product.data.get("product_code").toString(),
+                                product.data.get("ean_code").toString(),
+                                product.data.get("product_brand").toString(),
+                                product.data.get("product_type").toString(),
+                                DepartmentEnum.valueOf(product.data.get("department").toString()),
+                                product.data.get("sell_price") as Double,
+                                product.data.get("purchased_price") as Double,
+                                (product.data.get("stock_quantity") as Long).toInt(),
+                                //Date(product.data.get("registered_at") as Long),
+                                Date.from(registerDate.toInstant()),
+                                product.data.get("image").toString(),
+                                product.data.get("specs").toString(),
+                                Date.from(registerDate.toInstant()),
+                                //product.data.get("release_date") as Date,
+                            ))
+                        }
 
-                //val product = data.toObject<List<Product>>()
-                val product = Product(
-                    data.get("product_code").toString(),
-                    data.get("ean_code").toString(),
-                    data.get("product_brand").toString(),
-                    data.get("product_type").toString(),
-                    DepartmentEnum.TELECOM,
-                    data.get("sell_price").toString().toDouble(),
-                    data.get("purchased_price").toString().toDouble(),
-                    data.get("stock_quantity").toString().toInt(),
-                    Date.from(registerDate.toInstant()),
-                    "image",
-                    data.get("specs").toString(),
-                    Date.from(releaseDate.toInstant())
-                )
-                _product.value = product
+                        _product.value = productList
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.w("TAG", "Error getting documents: ", exception)
+                    }
+
 
 
             }

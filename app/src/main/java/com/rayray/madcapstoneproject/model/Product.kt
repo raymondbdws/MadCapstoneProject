@@ -2,7 +2,7 @@ package com.rayray.madcapstoneproject.model
 
 import java.util.*
 
-data class Product (
+data class Product(
     var code: String,
     var ean: String,
     var brand: String,
