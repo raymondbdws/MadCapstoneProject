@@ -6,6 +6,12 @@
     <!--- fragment overzicht artikelen -->
     <string name="it_search_hint">Zoeken naar artikelen</string>
     <string name="spinner_sort">Sorteren op: </string>
+    <string-array name="sort_options">
+        <item>Prijs oplopend</item>
+        <item>Prijs aflopend</item>
+        <item>Alfabetisch</item>
+        <item>Afdeling</item>
+    </string-array>
 
     <!--- fragment inboeken -->
     <string name="tv_article_scanned">Artikel gescand:</string>
@@ -13,4 +19,6 @@
 
     <!-- Controle fragment -->
     <string name="scan_article">Scan artikel</string>
+
+
 </resources>

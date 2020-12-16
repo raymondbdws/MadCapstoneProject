@@ -39,11 +39,11 @@ class ProductRepository {
                 val parsedReleaseDate = LocalDate.parse("2020 11 07", formatter)
                 val releaseDate: ZonedDateTime = parsedReleaseDate.atStartOfDay(ZoneId.systemDefault())
 
-                //collection
+                //get collection
                 firestore.collection("products")
                     .get()
                     .addOnSuccessListener { products ->
-                        //Documents
+                        //get Documents
                         for (product in products){
                             productList.add(Product(
                                 product.data.get("product_code").toString(),
@@ -58,7 +58,7 @@ class ProductRepository {
                                 Date.from(registerDate.toInstant()),
                                 product.data.get("image").toString(),
                                 product.data.get("specs").toString(),
-                                Date.from(registerDate.toInstant()),
+                                Date.from(releaseDate.toInstant()),
                                 //product.data.get("release_date") as Date,
                             ))
                         }

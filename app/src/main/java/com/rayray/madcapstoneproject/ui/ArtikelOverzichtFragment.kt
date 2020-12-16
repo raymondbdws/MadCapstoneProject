@@ -1,10 +1,14 @@
 package com.rayray.madcapstoneproject.ui.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.SearchView
+import android.widget.Spinner
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -15,6 +19,9 @@ import com.rayray.madcapstoneproject.adapter.ProductAdapter
 import com.rayray.madcapstoneproject.model.Product
 import com.rayray.madcapstoneproject.model.ProductViewModel
 import kotlinx.android.synthetic.main.fragment_overzicht_artikel.*
+import java.util.*
+import kotlin.collections.ArrayList
+
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -25,14 +32,56 @@ class ArtikelOverzichtFragment : Fragment() {
     private lateinit var productAdapter: ProductAdapter
     private val viewModel: ProductViewModel by activityViewModels()
     private var products: ArrayList<Product> = arrayListOf()
-
+    private var displayProductList = ArrayList<Product>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val inflater = inflater.inflate(R.layout.fragment_overzicht_artikel, container, false)
+        val spinner = inflater.findViewById<Spinner>(R.id.spinnerProducts)
+
+        val adapter = ArrayAdapter.createFromResource(
+            requireActivity().baseContext,
+            R.array.sort_options,
+            android.R.layout.simple_spinner_dropdown_item
+        )
+
+        spinner.adapter = adapter
+
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                p1: View?,
+                position: Int,
+                p3: Long
+            ) {
+                val selectedItem = parent?.getItemAtPosition(position).toString()
+
+                if (selectedItem.equals("Prijs aflopend")) {
+                    this@ArtikelOverzichtFragment.products.sortBy {
+                        it.stock_quantity
+                    }
+                } else if (selectedItem.equals("Alphabetisch")) {
+                    this@ArtikelOverzichtFragment.products.sortBy {
+                        it.brand
+                    }
+                } else {
+                    this@ArtikelOverzichtFragment.products.sortBy {
+                        it.department
+                    }
+                }
+
+                productAdapter.notifyDataSetChanged()
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                TODO("Not yet implemented")
+            }
+        }
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_overzicht_artikel, container, false)
+        return inflater
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -40,21 +89,49 @@ class ArtikelOverzichtFragment : Fragment() {
         initRv()
         viewModel.getProduct()
         observeProduct()
+        filterList()
+    }
+
+    private fun filterList() {
+        svSearchProducts.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText!!.isNotEmpty()){
+                    products.clear()
+                    val search = newText.toLowerCase(Locale.getDefault())
+                    displayProductList.forEach {
+                        if (it.brand.toLowerCase(Locale.getDefault()).contains(search)){
+                            products.add(it)
+                        }
+                    }
+                    productAdapter.notifyDataSetChanged()
+                } else{
+                    products.clear()
+                    products.addAll(displayProductList)
+                    productAdapter.notifyDataSetChanged()
+                }
+                return true
+            }
+
+        })
     }
 
     private fun observeProduct() {
-        viewModel.product.observe(viewLifecycleOwner, Observer {products ->
-                this@ArtikelOverzichtFragment.products.clear()
-                this@ArtikelOverzichtFragment.products.addAll(products)
-                this@ArtikelOverzichtFragment.products.sortBy {
-                    it.register_at
-                }
-                productAdapter.notifyDataSetChanged()
-            }
-        )
+        viewModel.product.observe(viewLifecycleOwner, Observer { products ->
+            this@ArtikelOverzichtFragment.products.clear()
+            this@ArtikelOverzichtFragment.products.addAll(products)
+            this@ArtikelOverzichtFragment.displayProductList.addAll(products)
+//            this@ArtikelOverzichtFragment.products.sortBy {
+//                it.stock_quantity
+//            }
+            productAdapter.notifyDataSetChanged()
+        })
     }
 
-    private fun initRv(){
+    private fun initRv() {
         productAdapter = ProductAdapter(products)
         viewManager = LinearLayoutManager(activity)
 

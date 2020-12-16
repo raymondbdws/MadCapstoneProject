@@ -15,6 +15,7 @@ class ProductAdapter(private val products: List<Product>): RecyclerView.Adapter<
             itemView.tvItemProductCode.text = product.code
             itemView.tvItemProductName.text = "${product.brand} ${product.type}"
             itemView.tvItemProductQuantity.text = "${product.stock_quantity}x"
+            itemView.tvItemDepartment.text = product.department.toString()
             itemView.tvItemProductPrice.text = "€${product.purchased_price}"
         }
     }

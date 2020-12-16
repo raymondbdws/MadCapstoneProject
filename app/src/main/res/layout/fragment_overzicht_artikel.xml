@@ -8,10 +8,11 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvProducts"
-        android:layout_width="410dp"
+        android:layout_width="0dp"
         android:layout_height="605dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="28dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinnerProducts" />
 
@@ -19,32 +20,29 @@
         android:id="@+id/spinnerProducts"
         android:layout_width="290dp"
         android:layout_height="36dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintBottom_toBottomOf="@+id/tvSort"
-        app:layout_constraintEnd_toEndOf="@+id/tilSearchProducts"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvSort"
         app:layout_constraintVertical_bias="0.588" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilSearchProducts"
-        android:layout_width="378dp"
-        android:layout_height="60dp"
+    <SearchView
+        android:id="@+id/svSearchProducts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/itSearchProducts"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/it_search_hint" />
-    </com.google.android.material.textfield.TextInputLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvSort"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
         android:text="@string/spinner_sort"
-        app:layout_constraintStart_toStartOf="@+id/tilSearchProducts"
-        app:layout_constraintTop_toBottomOf="@+id/tilSearchProducts" />
+        app:layout_constraintEnd_toStartOf="@+id/spinnerProducts"
+        app:layout_constraintHorizontal_bias="0.551"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/svSearchProducts" />
 </androidx.constraintlayout.widget.ConstraintLayout>
