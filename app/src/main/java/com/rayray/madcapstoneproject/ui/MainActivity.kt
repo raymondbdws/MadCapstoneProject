@@ -13,15 +13,18 @@ import com.google.android.material.tabs.TabLayout
 import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.rayray.madcapstoneproject.R
+import com.rayray.madcapstoneproject.adapter.ViewPagerAdapter
 import com.rayray.madcapstoneproject.ui.ui.AfschrijfFragment
 import com.rayray.madcapstoneproject.ui.ui.ArtikelOverzichtFragment
 import com.rayray.madcapstoneproject.ui.ui.ControleFragment
 import com.rayray.madcapstoneproject.ui.ui.InboekFragment
+import kotlinx.android.synthetic.main.activity_main.*
 
 /****
  * @author Raymond Chang
  */
 class MainActivity : AppCompatActivity() {
+    var position = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +51,23 @@ class MainActivity : AppCompatActivity() {
 
         viewPager.adapter = viewPagerAdapter
         tabLayout.setupWithViewPager(viewPager)
+        getSelectedTab()
+    }
+
+    fun getSelectedTab(): Int {
+        tabLayout!!.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                position = tab.position
+
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+        })
+        return position
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -66,33 +86,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-    internal class ViewPagerAdapter(fragmentManager: FragmentManager): FragmentPagerAdapter(fragmentManager){
-
-        private val fragments: ArrayList<Fragment>
-        private val titles: ArrayList<String>
-
-        init {
-            fragments = ArrayList<Fragment>()
-            titles = ArrayList<String>()
-        }
-
-        override fun getCount(): Int {
-            return fragments.size
-        }
-
-        override fun getItem(position: Int): Fragment {
-            return fragments[position]
-        }
-
-        fun addFragment(fragment: Fragment, title: String){
-            fragments.add(fragment)
-            titles.add(title)
-        }
-
-        override fun getPageTitle(position: Int): CharSequence? {
-            return titles[position]
-        }
-
-    }
 }
