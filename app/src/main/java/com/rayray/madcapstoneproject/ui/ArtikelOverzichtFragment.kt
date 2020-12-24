@@ -124,9 +124,6 @@ class ArtikelOverzichtFragment : Fragment() {
             this@ArtikelOverzichtFragment.products.clear()
             this@ArtikelOverzichtFragment.products.addAll(products)
             this@ArtikelOverzichtFragment.displayProductList.addAll(products)
-//            this@ArtikelOverzichtFragment.products.sortBy {
-//                it.stock_quantity
-//            }
             productAdapter.notifyDataSetChanged()
         })
     }
@@ -157,7 +154,6 @@ class ArtikelOverzichtFragment : Fragment() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
 //                val productToDelete = products[position]
-//                viewModel.deleteGame(gameToDelete)
             }
         }
         return ItemTouchHelper(callback)

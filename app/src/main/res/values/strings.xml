@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">MadCapstoneProject</string>
     <string name="action_settings">Settings</string>
+    <integer name="start_at_zero">0</integer>
     <!-- Strings used for fragments for navigation -->
 
     <!--- fragment overzicht artikelen -->
@@ -15,7 +16,8 @@
 
     <!--- fragment inboeken -->
     <string name="tv_article_scanned">Artikel gescand:</string>
-    <string name="tv_quantity">0/0</string>
+    <string name="tv_quantity">0</string>
+    <string name="btn_opslaan">Opslaan</string>
 
     <!-- Controle fragment -->
     <string name="scan_article">Scan artikel</string>

@@ -21,6 +21,7 @@ import com.google.android.gms.vision.Detector
 import com.google.android.gms.vision.barcode.Barcode
 import com.google.android.gms.vision.barcode.BarcodeDetector
 import com.rayray.madcapstoneproject.R
+import com.rayray.madcapstoneproject.model.Product
 import com.rayray.madcapstoneproject.model.ProductViewModel
 import com.rayray.madcapstoneproject.ui.MainActivity
 import kotlinx.android.synthetic.main.fragment_inboek.*
@@ -39,6 +40,14 @@ class InboekFragment : Fragment() {
     private val requestCodeCameraPermission = 1001
     private var barCode = "0"
     private val mainScope = CoroutineScope(Dispatchers.Main)
+    private var quantity = 0
+    private val minimumQuantityToUpdate = 1
+
+    //Onderste 2 blijven 0,
+    private val resetNumbers = 0
+    private val resetStrings = ""
+
+    private lateinit var selectedProduct: Product
     private lateinit var cameraSource: CameraSource
     private lateinit var detector: BarcodeDetector
 
@@ -60,6 +69,59 @@ class InboekFragment : Fragment() {
         checkCameraPermission()
         viewModel.getProduct()
         //observeProduct()
+        productItemClickEvent()
+        enableSaveButton(false)
+    }
+
+    /**
+     * Voegt onClick event toe aan de 3 knoppen
+     */
+    fun productItemClickEvent() {
+        val tvQuantity: TextView = view?.findViewById(R.id.tvQuantity) as TextView
+
+        ibAddQuantity.setOnClickListener {
+            tvQuantity.text = (++quantity).toString()
+        }
+        ibDeleteQuantity.setOnClickListener {
+            tvQuantity.text = (--quantity).toString()
+        }
+        btn_save_product_quantity.setOnClickListener {
+            if (quantity >= minimumQuantityToUpdate){
+                quantity += selectedProduct.stock_quantity
+
+                viewModel.updateProduct(quantity, selectedProduct)
+                viewModel.getProduct()
+                Toast.makeText(context, "Opgeslagen", Toast.LENGTH_SHORT).show()
+            }else{
+                Toast.makeText(context, "Kan niet afboeken, zie tab 'afboeken'", Toast.LENGTH_SHORT).show()
+            }
+            enableSaveButton(false)
+            clearSelectedProduct()
+        }
+    }
+
+    private fun clearSelectedProduct() {
+        barCode = resetNumbers.toString()
+        quantity = resetNumbers
+
+        val tvProductCode: TextView = view?.findViewById(R.id.tvProductCode) as TextView
+        val tvName: TextView = view?.findViewById(R.id.tvProductName) as TextView
+        val tvPrice: TextView = view?.findViewById(R.id.tvProductPrice) as TextView
+        val tvQuantity: TextView = view?.findViewById(R.id.tvQuantity) as TextView
+
+        tvProductCode.text = resetStrings
+        tvName.text = resetStrings
+        tvPrice.text = resetStrings
+        tvQuantity.text = quantity.toString()
+    }
+
+    private fun enableSaveButton(bool: Boolean) {
+        btn_save_product_quantity.isEnabled = bool
+        btn_save_product_quantity.isClickable = bool
+    }
+
+    private fun checkSelectedProductIsNotInitialized() {
+        //todo check anders crashed tie
     }
 
     private fun checkCameraPermission() {
@@ -123,31 +185,24 @@ class InboekFragment : Fragment() {
 
     }
 
-    private fun observeProduct(){
+    private fun observeProduct() {
+        val tvBarCode: TextView = view?.findViewById(R.id.tvProductCode) as TextView
+        val tvName: TextView = view?.findViewById(R.id.tvProductName) as TextView
+        val tvPrice: TextView = view?.findViewById(R.id.tvProductPrice) as TextView
+
         viewModel.product.observe(viewLifecycleOwner, {
-            for (product in it){
-                if (product.ean == barCode){
-                    //todo product item vullen onder de scanner
-                    val tvBarCode: TextView = view?.findViewById(R.id.tvProductCode) as TextView
-                    val tvName: TextView = view?.findViewById(R.id.tvProductName) as TextView
-                    val tvPrice: TextView = view?.findViewById(R.id.tvProductPrice) as TextView
-                    //todo weergeven in inboeken fragment.
+            for (product in it) {
+                if (product.ean == barCode) {
                     tvBarCode.text = product.code
                     tvName.text = "${product.brand} ${product.type}"
                     tvPrice.text = product.sell_price.toString()
-
-//                            textView.setOnClickListener {
-//                                textView.text = getString(R.string.name)
-//                            }
+                    selectedProduct = product
 
                 }
             }
         })
 
-        //todo plus min knop, click listener, bij elke klik voorraad updaten.
-        //todo start scanning, en maak gescande artikel leeg.
-
-        svCameraPreview.holder.addCallback(surfaceCallBack)
+        // plus min knop, click listener, bij elke klik voorraad updaten.
     }
 
     private val processor = object : Detector.Processor<Barcode> {
@@ -159,28 +214,20 @@ class InboekFragment : Fragment() {
             val currentFragment = (activity as MainActivity?)?.getSelectedTab()
             // val tabLayout: TabLayout = view!!.findViewById(R.id.tabLayout)
             if (detections != null && detections.detectedItems.isNotEmpty() &&
-                currentFragment == cameraFragment) {
+                currentFragment == cameraFragment
+            ) {
                 val barCodes: SparseArray<Barcode> = detections.detectedItems
-                barCode = barCodes.valueAt(0).displayValue
+                barCode = barCodes.valueAt(resetNumbers).displayValue
 
                 Log.d("tag", barCode)
                 mainScope.launch {
-                    withContext(Dispatchers.Main){
+                    withContext(Dispatchers.Main) {
                         observeProduct()
+                        enableSaveButton(true)
                     }
                 }
-
-                // vang barcode op
-                // stop tijdelijk scanne
-
-                // haal het desbetreffende artikel op
-
-
-                //cameraSource.stop()
             } else {
-
                 Log.d("tag", "No value + " + currentFragment)
-               // cameraSource.stop()
             }
         }
 

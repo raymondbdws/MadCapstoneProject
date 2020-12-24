@@ -17,9 +17,7 @@ import java.util.*
 
 class ProductRepository {
     private var firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private var productDocument = firestore.collection("products").document("Telecom").collection("Samsung").document(
-        "1652625"
-    )
+    private var productDocument = firestore.collection("products")
 
     private val _product: MutableLiveData<List<Product>> = MutableLiveData()
     val product: LiveData<List<Product>> get() = _product
@@ -87,7 +85,7 @@ class ProductRepository {
     suspend fun updateProduct(product: Product){
         try {
             withTimeout(5_000){
-                productDocument.set(product, SetOptions.merge()).await()
+                productDocument.document(product.code).set(product, SetOptions.merge()).await()
 
                 _createSuccess.value = true
             }

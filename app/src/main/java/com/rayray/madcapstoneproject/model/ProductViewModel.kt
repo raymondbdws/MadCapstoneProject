@@ -30,6 +30,7 @@ class ProductViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun updateProduct(newQuantity: Int, product: Product) {
+        //todo check of quantity positief of negatief is. + of -
         val updatedProduct = Product(
             product.code,
             product.ean,
