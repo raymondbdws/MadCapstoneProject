@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.rayray.madcapstoneproject.R
 import com.rayray.madcapstoneproject.model.Product
 import kotlinx.android.synthetic.main.item_product.view.*
-import kotlinx.android.synthetic.main.item_product_afboeken.view.*
 
 class ProductAdapter(private val products: List<Product>): RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
 
@@ -37,6 +36,4 @@ class ProductAdapter(private val products: List<Product>): RecyclerView.Adapter<
     override fun getItemCount(): Int {
         return products.size
     }
-
-
 }
