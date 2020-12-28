@@ -190,7 +190,7 @@ class InboekFragment : Fragment() {
         val tvName: TextView = view?.findViewById(R.id.tvProductName) as TextView
         val tvPrice: TextView = view?.findViewById(R.id.tvProductPrice) as TextView
 
-        viewModel.product.observe(viewLifecycleOwner, {
+        viewModel.products.observe(viewLifecycleOwner, {
             for (product in it) {
                 if (product.ean == barCode) {
                     tvBarCode.text = product.code

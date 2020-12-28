@@ -70,7 +70,7 @@ class AfschrijfFragment : Fragment(){
     }
 
     private fun observeProduct() {
-        viewModel.product.observe(viewLifecycleOwner, Observer { products ->
+        viewModel.products.observe(viewLifecycleOwner, Observer { products ->
             this@AfschrijfFragment.products.clear()
             this@AfschrijfFragment.products.addAll(products)
             productAdapter.notifyDataSetChanged()

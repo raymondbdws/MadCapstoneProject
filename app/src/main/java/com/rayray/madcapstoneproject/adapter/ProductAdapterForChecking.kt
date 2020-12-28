@@ -8,13 +8,14 @@ import com.rayray.madcapstoneproject.R
 import com.rayray.madcapstoneproject.model.Product
 import kotlinx.android.synthetic.main.item_product_controle.view.*
 
-class ProductAdapterForChecking (private val products: List<Product>): RecyclerView.Adapter<ProductAdapterForChecking.ViewHolder>(){
+class ProductAdapterForChecking (private val products: List<Product>, private val productToCheck: MutableMap<String, Int>):
+    RecyclerView.Adapter<ProductAdapterForChecking.ViewHolder>(){
 
     inner class ViewHolder(itemView:View): RecyclerView.ViewHolder(itemView){
         fun databind(product: Product){
             itemView.tvItemProductCodeControle.text = product.code
             itemView.tvItemProductNameControle.text = "${product.brand} ${product.type}"
-            itemView.tvItemProductQuantityControle.text = "${product.stock_quantity}x"
+            itemView.tvItemProductQuantityControle.text = "${productToCheck.getOrDefault(product.ean, 0)}/${product.stock_quantity}"
             itemView.tvItemDepartmentControle.text = product.department.toString()
             itemView.tvItemProductPriceControle.text = "€${product.purchased_price}"
         }
@@ -23,7 +24,7 @@ class ProductAdapterForChecking (private val products: List<Product>): RecyclerV
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductAdapterForChecking.ViewHolder {
         return ViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                R.layout.item_product,
+                R.layout.item_product_controle,
                 parent, false
             )
         )

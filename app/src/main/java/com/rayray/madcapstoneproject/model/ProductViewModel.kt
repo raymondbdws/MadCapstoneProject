@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.rayray.madcapstoneproject.repository.ProductRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
@@ -14,7 +15,7 @@ class ProductViewModel(application: Application) : AndroidViewModel(application)
     private val TAG = "FIRESTORE"
     private val productRepository: ProductRepository = ProductRepository()
 
-    val product: LiveData<List<Product>> = productRepository.product
+    val products: LiveData<List<Product>> = productRepository.product
     val createSuccess: LiveData<Boolean> = productRepository.createSuccess
     private val _errorText: MutableLiveData<String> = MutableLiveData()
     val errorText: LiveData<String> get() = _errorText

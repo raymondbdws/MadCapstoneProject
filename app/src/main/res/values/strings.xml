@@ -21,6 +21,7 @@
 
     <!-- Controle fragment -->
     <string name="scan_article">Scan artikel</string>
+    <string name="quantity_error">Alle artikelen zijn al gescand</string>
 
 
 </resources>

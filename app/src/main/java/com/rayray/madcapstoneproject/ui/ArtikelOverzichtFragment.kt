@@ -120,7 +120,7 @@ class ArtikelOverzichtFragment : Fragment() {
     }
 
     private fun observeProduct() {
-        viewModel.product.observe(viewLifecycleOwner, Observer { products ->
+        viewModel.products.observe(viewLifecycleOwner, Observer { products ->
             this@ArtikelOverzichtFragment.products.clear()
             this@ArtikelOverzichtFragment.products.addAll(products)
             this@ArtikelOverzichtFragment.displayProductList.addAll(products)
