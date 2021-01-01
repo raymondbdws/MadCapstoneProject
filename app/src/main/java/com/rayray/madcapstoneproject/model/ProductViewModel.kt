@@ -30,23 +30,7 @@ class ProductViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun updateProduct(newQuantity: Int, product: Product) {
-        //todo check of quantity positief of negatief is. + of -
-        val updatedProduct = Product(
-            product.code,
-            product.ean,
-            product.brand,
-            product.type,
-            product.department,
-            product.sell_price,
-            product.purchased_price,
-            newQuantity,
-            product.register_at,
-            product.image,
-            product.specs,
-            product.release_date
-        )
-
+    fun updateProduct(updatedProduct: Product) {
         viewModelScope.launch {
             try {
                 productRepository.updateProduct(updatedProduct)
@@ -54,6 +38,5 @@ class ProductViewModel(application: Application) : AndroidViewModel(application)
                 Log.e(TAG, e.message ?: "can not update product")
             }
         }
-
     }
 }

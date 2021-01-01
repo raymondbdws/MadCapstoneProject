@@ -15,15 +15,8 @@ class ProductAdapterForAfboeken(private val products: List<Product>, private val
     var newQuantity = 0
 
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
-        init {
-//
-//            itemView.ibAddQuantityAfboeken.setOnClickListener {
-//                newQuantity = products[adapterPosition].stock_quantity
-//                selectedNewQuantity++
-//                newQuantity += selectedNewQuantity
-//                onClick(products[adapterPosition], newQuantity)
-//            }
 
+        init {
             itemView.ibDeleteQuantityAfboeken.setOnClickListener {
                 newQuantity = products[adapterPosition].stock_quantity
                 selectedNewQuantity--
@@ -58,6 +51,4 @@ class ProductAdapterForAfboeken(private val products: List<Product>, private val
     override fun getItemCount(): Int {
         return products.size
     }
-
-
 }

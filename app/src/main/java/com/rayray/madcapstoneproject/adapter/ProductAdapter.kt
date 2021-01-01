@@ -8,6 +8,11 @@ import com.rayray.madcapstoneproject.R
 import com.rayray.madcapstoneproject.model.Product
 import kotlinx.android.synthetic.main.item_product.view.*
 
+/***
+ * @author Raymond Chang
+ *
+ * This adapter is being used for displaying Products items in ArtikelOverzichtFragment
+ */
 class ProductAdapter(private val products: List<Product>): RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){

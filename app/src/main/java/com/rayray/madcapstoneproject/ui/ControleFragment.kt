@@ -18,8 +18,8 @@ import com.google.android.gms.vision.CameraSource
 import com.google.android.gms.vision.Detector
 import com.google.android.gms.vision.barcode.Barcode
 import com.google.android.gms.vision.barcode.BarcodeDetector
+import com.google.android.material.snackbar.Snackbar
 import com.rayray.madcapstoneproject.R
-import com.rayray.madcapstoneproject.adapter.ProductAdapter
 import com.rayray.madcapstoneproject.adapter.ProductAdapterForChecking
 import com.rayray.madcapstoneproject.model.Product
 import com.rayray.madcapstoneproject.model.ProductViewModel
@@ -32,7 +32,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-
 class ControleFragment : Fragment() {
     private lateinit var alertDialogFragment: AlertDialog
     private lateinit var detector: BarcodeDetector
@@ -43,7 +42,6 @@ class ControleFragment : Fragment() {
     private lateinit var viewManager: RecyclerView.LayoutManager
     private lateinit var productAdapter: ProductAdapterForChecking
 
-    //todo map gebruiken om de huidige voorraad te controleren.
     private var products: ArrayList<Product> = arrayListOf()
     private var productToCheck: MutableMap<String, Int> = mutableMapOf()
     private var barCode = "0"
@@ -69,7 +67,6 @@ class ControleFragment : Fragment() {
         override fun surfaceDestroyed(p0: SurfaceHolder) {
             cameraSource.stop()
         }
-
     }
 
     override fun onCreateView(
@@ -88,7 +85,7 @@ class ControleFragment : Fragment() {
         initRv()
         inflater = this.layoutInflater
         dialogView = inflater.inflate(R.layout.dialog_camera, null)
-        svCameraControlePreview = dialogView.findViewById<SurfaceView>(R.id.svCameraControlePreview)
+        svCameraControlePreview = dialogView.findViewById(R.id.svCameraControlePreview)
         checkCameraPermission()
         createDialog()
 
@@ -138,14 +135,12 @@ class ControleFragment : Fragment() {
         cameraSource = CameraSource.Builder(requireContext(), detector)
             .setAutoFocusEnabled(true)
             .build()
-
         svCameraControlePreview.holder.addCallback(surfaceCallBack)
         detector.setProcessor(processor)
     }
 
     private val processor = object : Detector.Processor<Barcode> {
         override fun release() {
-
         }
 
         override fun receiveDetections(detections: Detector.Detections<Barcode>) {
@@ -154,21 +149,19 @@ class ControleFragment : Fragment() {
             if (detections != null) {
                 val barCodes: SparseArray<Barcode> = detections.detectedItems
 
-
-                if(barCodes.size() > 0){
+                if (barCodes.size() > 0) {
                     //geen try catch, anders stopt de functie te vroeg. error tot gevolg.
                     barCode = barCodes.valueAt(resetNumbers).displayValue
                 }
 
                 countScannedProduct()
-
             } else {
                 Log.d("tag", "No value + " + currentFragment)
             }
         }
     }
 
-    private fun countScannedProduct(){
+    private fun countScannedProduct() {
         //Loopt door alle producten die in de database staan
         for (product in products) {
 
@@ -189,16 +182,15 @@ class ControleFragment : Fragment() {
                         alertDialogFragment.dismiss()
 
                         mainScope.launch {
-                            withContext(Dispatchers.Main){
-                                Toast.makeText(
-                                    context,
+                            withContext(Dispatchers.Main) {
+                                Snackbar.make(
+                                    requireActivity().findViewById(R.id.clControle),
                                     R.string.quantity_error,
-                                    Toast.LENGTH_SHORT
+                                    Snackbar.LENGTH_LONG
                                 ).show()
                             }
                         }
                     }
-
                 } else {
                     //Voegt een nieuw ean nummer met quantity 1
                     productToCheck[barCode] = 1
@@ -212,7 +204,6 @@ class ControleFragment : Fragment() {
                 }
             }
         }
-
     }
 
     private fun createDialog() {

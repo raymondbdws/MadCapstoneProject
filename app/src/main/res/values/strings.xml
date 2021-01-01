@@ -18,6 +18,8 @@
     <string name="tv_article_scanned">Artikel gescand:</string>
     <string name="tv_quantity">0</string>
     <string name="btn_opslaan">Opslaan</string>
+    <string name="opgeslagen">Product opgeslagen</string>
+    <string name="niet_opgeslagen">Kan niet afboeken, zie tab \'afboeken\'</string>
 
     <!-- Controle fragment -->
     <string name="scan_article">Scan artikel</string>

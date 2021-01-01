@@ -22,18 +22,28 @@ import kotlinx.android.synthetic.main.fragment_overzicht_artikel.*
 import java.util.*
 import kotlin.collections.ArrayList
 
-
 /**
- * A simple [Fragment] subclass as the default destination in the navigation.
+ * @author Raymond Chang
+ *
+ * Deze class zorgt ervoor dat alle producten wordt weergeven dmv Adapter en dat
+ * alle funtionaliteiten op ArtikelOverzichtFragment het doen.
  */
 class ArtikelOverzichtFragment : Fragment() {
 
+    /**
+     * Variabelen
+     */
     private lateinit var viewManager: RecyclerView.LayoutManager
     private lateinit var productAdapter: ProductAdapter
+
     private val viewModel: ProductViewModel by activityViewModels()
+
     private var products: ArrayList<Product> = arrayListOf()
     private var displayProductList = ArrayList<Product>()
 
+    /**
+     * OncreateView
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -59,8 +69,12 @@ class ArtikelOverzichtFragment : Fragment() {
                 val selectedItem = parent?.getItemAtPosition(position).toString()
 
                 if (selectedItem.equals("Prijs aflopend")) {
+                    this@ArtikelOverzichtFragment.products.sortByDescending {
+                        it.sell_price
+                    }
+                }else if (selectedItem.equals("Prijs oplopend")) {
                     this@ArtikelOverzichtFragment.products.sortBy {
-                        it.stock_quantity
+                        it.sell_price
                     }
                 } else if (selectedItem.equals("Alphabetisch")) {
                     this@ArtikelOverzichtFragment.products.sortBy {
@@ -71,12 +85,10 @@ class ArtikelOverzichtFragment : Fragment() {
                         it.department
                     }
                 }
-
                 productAdapter.notifyDataSetChanged()
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
-                TODO("Not yet implemented")
             }
         }
 
@@ -84,6 +96,9 @@ class ArtikelOverzichtFragment : Fragment() {
         return inflater
     }
 
+    /**
+     * onViewCreated
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRv()

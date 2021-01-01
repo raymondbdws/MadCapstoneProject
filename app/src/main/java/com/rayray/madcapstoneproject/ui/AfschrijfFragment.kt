@@ -16,15 +16,27 @@ import com.rayray.madcapstoneproject.model.Product
 import com.rayray.madcapstoneproject.model.ProductViewModel
 import kotlinx.android.synthetic.main.fragment_afschrijf.*
 
-class AfschrijfFragment : Fragment(){
+/**
+ * @author Raymond Chang
+ *
+ * Deze class wordt gebruikt om artikelen af te schrijven.
+ */
+class AfschrijfFragment : Fragment() {
 
+    /**
+     * Variabelen die nodig zijn om het product af te schrijven.
+     */
     private lateinit var viewManager: RecyclerView.LayoutManager
     private lateinit var productAdapter: ProductAdapterForAfboeken
-    private lateinit var selectedProduct: Product
 
     private val viewModel: ProductViewModel by activityViewModels()
-    private var products: ArrayList<Product> = arrayListOf()
 
+    private var products: ArrayList<Product> = arrayListOf()
+    private var updateProducts: MutableMap<String, Int> = mutableMapOf()
+
+    /**
+     * OncreateView
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -33,6 +45,9 @@ class AfschrijfFragment : Fragment(){
         return inflater.inflate(R.layout.fragment_afschrijf, container, false)
     }
 
+    /**
+     * onViewCreated
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRv()
@@ -40,12 +55,40 @@ class AfschrijfFragment : Fragment(){
         observeProduct()
 
         btn_save_product_quantity_afschrijving.setOnClickListener {
-            viewModel.updateProduct(productAdapter.newQuantity, selectedProduct)
+            for (product in products) {
+                if (updateProducts.containsKey(product.ean)) {
+                    val updatedProduct = Product(
+                        product.code,
+                        product.ean,
+                        product.brand,
+                        product.type,
+                        product.department,
+                        product.sell_price,
+                        product.purchased_price,
+                        updateProducts.get(product.ean) as Int,
+                        product.register_at,
+                        product.image,
+                        product.specs,
+                        product.release_date
+                    )
+                    viewModel.updateProduct(updatedProduct)
+                }
+            }
             viewModel.getProduct()
             productAdapter.notifyDataSetChanged()
             productAdapter.selectedNewQuantity = 0
+
+            Snackbar.make(
+                requireActivity().findViewById(R.id.clAfschrijf),
+                R.string.opgeslagen,
+                Snackbar.LENGTH_LONG
+            ).show()
         }
     }
+
+    /**
+     * initialiseert Recycleview
+     */
     private fun initRv() {
         productAdapter = ProductAdapterForAfboeken(products, ::onProductClick)
         viewManager = LinearLayoutManager(activity)
@@ -57,18 +100,23 @@ class AfschrijfFragment : Fragment(){
         }
     }
 
-    //zonder -, wordt het plus 1 x 2
+    /**
+     * Wanneer er op een minnetje klikt van een item in de RV, dan wordt ook de Quantity
+     * bijgewerkt van het geselecteerde product.
+     *
+     * In dit geval is het alleen mogelijk om het aantal te verminderen.
+     *
+     * @param product Het product wordt hier meegegeven, en wordt alleen het ean nummer
+     *                en Quantity  opgeslagen in de Map
+     */
     private fun onProductClick(product: Product) {
-        selectedProduct = product
-
-        viewModel.updateProduct(productAdapter.newQuantity, selectedProduct)
-        viewModel.getProduct()
+        updateProducts.put(product.ean, (--product.stock_quantity))
         productAdapter.notifyDataSetChanged()
-        productAdapter.selectedNewQuantity = 0
-
-        //Snackbar.make(rvProductsAfschrijving, "This color is: ${product.type}", Snackbar.LENGTH_LONG).show()
     }
 
+    /**
+     * Observing products. Automatisch wordt de RV bijgewerkt wanneer Productslijst wordt aangepast.
+     */
     private fun observeProduct() {
         viewModel.products.observe(viewLifecycleOwner, Observer { products ->
             this@AfschrijfFragment.products.clear()
