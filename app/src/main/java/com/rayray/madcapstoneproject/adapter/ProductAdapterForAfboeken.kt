@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.rayray.madcapstoneproject.R
 import com.rayray.madcapstoneproject.model.Product
 import kotlinx.android.synthetic.main.item_product_afboeken.view.*
-import kotlin.reflect.KFunction2
 
 class ProductAdapterForAfboeken(private val products: List<Product>, private val onClick: (Product) -> Unit):
     RecyclerView.Adapter<ProductAdapterForAfboeken.ViewHolder>() {
@@ -26,7 +25,6 @@ class ProductAdapterForAfboeken(private val products: List<Product>, private val
         }
 
         fun databind(product: Product){
-
             itemView.tvItemProductCodeAfboeken.text = product.code
             itemView.tvItemProductNameAfboeken.text = "${product.brand} ${product.type}"
             itemView.tvItemProductQuantityAfboeken.text = "${product.stock_quantity}"

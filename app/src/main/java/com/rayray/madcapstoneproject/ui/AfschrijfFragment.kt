@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -15,6 +16,9 @@ import com.rayray.madcapstoneproject.adapter.ProductAdapterForAfboeken
 import com.rayray.madcapstoneproject.model.Product
 import com.rayray.madcapstoneproject.model.ProductViewModel
 import kotlinx.android.synthetic.main.fragment_afschrijf.*
+import kotlinx.android.synthetic.main.fragment_overzicht_artikel.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * @author Raymond Chang
@@ -33,6 +37,7 @@ class AfschrijfFragment : Fragment() {
 
     private var products: ArrayList<Product> = arrayListOf()
     private var updateProducts: MutableMap<String, Int> = mutableMapOf()
+    private var originalProductList = ArrayList<Product>()
 
     /**
      * OncreateView
@@ -53,7 +58,14 @@ class AfschrijfFragment : Fragment() {
         initRv()
         viewModel.getProduct()
         observeProduct()
+        filterList()
+        btnSaveOnclick()
+    }
 
+    /**
+     * Save knop onclick listener
+     */
+    private fun btnSaveOnclick(){
         btn_save_product_quantity_afschrijving.setOnClickListener {
             for (product in products) {
                 if (updateProducts.containsKey(product.ean)) {
@@ -84,6 +96,55 @@ class AfschrijfFragment : Fragment() {
                 Snackbar.LENGTH_LONG
             ).show()
         }
+    }
+
+    /**
+     * Zoek funtionaliteit. Het filtert de lijst op basis van de zoektermen. Er is een
+     * kopie van de productenLijst, het kopie blijft ongewijzigd.
+     *
+     * Kopie is nodig om het totaal aantal producten te kunnen tellen dat nodig is om
+     * te loopen.
+     */
+    private fun filterList() {
+        svSearchProductsAfschrijving.setOnQueryTextListener(object :
+            SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+                return true
+            }
+
+            /**
+             * Voert uit bij elke wijziging in de zoekbalk.
+             */
+            override fun onQueryTextChange(searchWord: String?): Boolean {
+
+                //controleert of de variabel niet leeg is.
+                if (searchWord!!.isNotEmpty()) {
+
+                    //Productlijst wordt tijdelijk leeggemaakt.
+                    products.clear()
+
+                    //Stopt waarde in lowercase in search var.
+                    val search = searchWord.toLowerCase(Locale.getDefault())
+
+                    //Loopt door alle producten om te kijken of de zoekwoorden matchen., zoja,
+                    //dan wordt het aan de productLijst toegevoegd.
+                    originalProductList.forEach {
+                        if (it.brand.toLowerCase(Locale.getDefault()).contains(search) ||
+                            it.type.toLowerCase(Locale.getDefault()).contains(search)
+                        ) {
+                            //Voegt matchend product toe aan de lijst.
+                            products.add(it)
+                        }
+                    }
+                    productAdapter.notifyDataSetChanged()
+                } else {
+                    products.clear()
+                    products.addAll(originalProductList)
+                    productAdapter.notifyDataSetChanged()
+                }
+                return true
+            }
+        })
     }
 
     /**
@@ -121,6 +182,8 @@ class AfschrijfFragment : Fragment() {
         viewModel.products.observe(viewLifecycleOwner, Observer { products ->
             this@AfschrijfFragment.products.clear()
             this@AfschrijfFragment.products.addAll(products)
+            this@AfschrijfFragment.originalProductList.clear()
+            this@AfschrijfFragment.originalProductList.addAll(products)
             productAdapter.notifyDataSetChanged()
         })
     }

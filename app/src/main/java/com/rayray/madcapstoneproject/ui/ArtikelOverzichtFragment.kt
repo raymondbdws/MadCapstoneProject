@@ -11,7 +11,6 @@ import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.rayray.madcapstoneproject.R
@@ -39,7 +38,7 @@ class ArtikelOverzichtFragment : Fragment() {
     private val viewModel: ProductViewModel by activityViewModels()
 
     private var products: ArrayList<Product> = arrayListOf()
-    private var displayProductList = ArrayList<Product>()
+    private var originalProductList = ArrayList<Product>()
 
     /**
      * OncreateView
@@ -58,7 +57,26 @@ class ArtikelOverzichtFragment : Fragment() {
         )
 
         spinner.adapter = adapter
+        spinnerSelectedListener(spinner)
 
+        return inflater
+    }
+
+    /**
+     * onViewCreated
+     */
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initRv()
+        viewModel.getProduct()
+        observeProduct()
+        filterList()
+    }
+
+    /**
+     * Beschrijft wat het moet doen wanneer een waarde in de spinner wordt geselecteerd.
+     */
+    private fun spinnerSelectedListener(spinner: Spinner){
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -68,11 +86,12 @@ class ArtikelOverzichtFragment : Fragment() {
             ) {
                 val selectedItem = parent?.getItemAtPosition(position).toString()
 
+                //Sorteert productlijst op basis van de geselecteerde waarde in de spinner.
                 if (selectedItem.equals("Prijs aflopend")) {
                     this@ArtikelOverzichtFragment.products.sortByDescending {
                         it.sell_price
                     }
-                }else if (selectedItem.equals("Prijs oplopend")) {
+                } else if (selectedItem.equals("Prijs oplopend")) {
                     this@ArtikelOverzichtFragment.products.sortBy {
                         it.sell_price
                     }
@@ -91,22 +110,15 @@ class ArtikelOverzichtFragment : Fragment() {
             override fun onNothingSelected(p0: AdapterView<*>?) {
             }
         }
-
-        // Inflate the layout for this fragment
-        return inflater
     }
 
     /**
-     * onViewCreated
+     * Zoek funtionaliteit. Het filtert de lijst op basis van de zoektermen. Er is een
+     * kopie van de productenLijst, het kopie blijft ongewijzigd.
+     *
+     * Kopie is nodig om het totaal aantal producten te kunnen tellen dat nodig is om
+     * te loopen.
      */
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initRv()
-        viewModel.getProduct()
-        observeProduct()
-        filterList()
-    }
-
     private fun filterList() {
         svSearchProducts.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
@@ -114,63 +126,61 @@ class ArtikelOverzichtFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText!!.isNotEmpty()){
+
+                //controleert of de variabel niet leeg is.
+                if (newText!!.isNotEmpty()) {
+
+                    //Productlijst wordt tijdelijk leeggemaakt.
                     products.clear()
+
+                    //Stopt waarde in lowercase in search var.
                     val search = newText.toLowerCase(Locale.getDefault())
-                    displayProductList.forEach {
-                        if (it.brand.toLowerCase(Locale.getDefault()).contains(search)){
+
+                    //Loopt door alle producten om te kijken of de zoekwoorden matchen., zoja,
+                    //dan wordt het aan de productLijst toegevoegd.
+                    originalProductList.forEach {
+                        if (it.brand.toLowerCase(Locale.getDefault()).contains(search) ||
+                            it.type.toLowerCase(Locale.getDefault()).contains(search)
+                        ) {
+                            //Voegt matchend product toe aan de lijst.
                             products.add(it)
                         }
                     }
                     productAdapter.notifyDataSetChanged()
-                } else{
+                } else {
                     products.clear()
-                    products.addAll(displayProductList)
+                    products.addAll(originalProductList)
                     productAdapter.notifyDataSetChanged()
                 }
                 return true
             }
-
         })
     }
 
+    /**
+     * Observing products. Automatisch wordt de RV bijgewerkt wanneer Productslijst wordt aangepast.
+     */
     private fun observeProduct() {
         viewModel.products.observe(viewLifecycleOwner, Observer { products ->
             this@ArtikelOverzichtFragment.products.clear()
             this@ArtikelOverzichtFragment.products.addAll(products)
-            this@ArtikelOverzichtFragment.displayProductList.addAll(products)
+            this@ArtikelOverzichtFragment.originalProductList.clear()
+            this@ArtikelOverzichtFragment.originalProductList.addAll(products)
             productAdapter.notifyDataSetChanged()
         })
     }
 
+    /**
+     * initialiseert Recycleview
+     */
     private fun initRv() {
         productAdapter = ProductAdapter(products)
         viewManager = LinearLayoutManager(activity)
-
-        createItemTouchHelper().attachToRecyclerView(rvProducts)
 
         rvProducts.apply {
             setHasFixedSize(true)
             layoutManager = viewManager
             adapter = productAdapter
         }
-    }
-
-    private fun createItemTouchHelper(): ItemTouchHelper {
-        val callback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                return false
-            }
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
-//                val productToDelete = products[position]
-            }
-        }
-        return ItemTouchHelper(callback)
     }
 }

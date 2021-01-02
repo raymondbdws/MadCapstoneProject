@@ -20,7 +20,7 @@ import com.rayray.madcapstoneproject.ui.ui.ControleFragment
 import com.rayray.madcapstoneproject.ui.ui.InboekFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
-/****
+/**
  * @author Raymond Chang
  */
 class MainActivity : AppCompatActivity() {
@@ -58,7 +58,6 @@ class MainActivity : AppCompatActivity() {
         tabLayout!!.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 position = tab.position
-
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
