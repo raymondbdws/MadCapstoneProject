@@ -177,12 +177,10 @@ class ControleFragment : Fragment() {
 
         override fun receiveDetections(detections: Detector.Detections<Barcode>) {
             val currentFragment = (activity as MainActivity?)?.getSelectedTab()
-            // val tabLayout: TabLayout = view!!.findViewById(R.id.tabLayout)
             if (detections != null) {
                 val barCodes: SparseArray<Barcode> = detections.detectedItems
 
                 if (barCodes.size() > 0) {
-                    //geen try catch, anders stopt de functie te vroeg. error tot gevolg.
                     barCode = barCodes.valueAt(resetNumbers).displayValue
                 }
 

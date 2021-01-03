@@ -18,17 +18,17 @@
         android:id="@+id/btn_save_product_quantity_afschrijving"
         android:layout_width="342dp"
         android:layout_height="50dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:text="@string/btn_opslaan"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.51"
+        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rvProductsAfschrijving" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvProductsAfschrijving"
         android:layout_width="0dp"
-        android:layout_height="600dp"
+        android:layout_height="610dp"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
